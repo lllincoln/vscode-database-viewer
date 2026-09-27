@@ -1,0 +1,188 @@
+{
+  "name": "database-viewer",
+  "displayName": "Database Viewer",
+  "description": "View SQLite, PostgreSQL, and other databases in your editor.",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://example.com/local/database-viewer.git"
+  },
+  "engines": {
+    "vscode": "^1.125.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:database-viewer.connections",
+    "onCommand:database-viewer.openSqlite",
+    "onCommand:database-viewer.connectPostgres",
+    "onCommand:database-viewer.openTable"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "sqlite",
+        "extensions": [
+          ".db",
+          ".sqlite",
+          ".sqlite3",
+          ".db3",
+          ".s3db",
+          ".sl3"
+        ],
+        "aliases": [
+          "SQLite Database"
+        ]
+      }
+    ],
+    "customEditors": [
+      {
+        "viewType": "database-viewer.sqliteEditor",
+        "displayName": "Database Viewer",
+        "selector": [
+          {
+            "filenamePattern": "*.db"
+          },
+          {
+            "filenamePattern": "*.sqlite"
+          },
+          {
+            "filenamePattern": "*.sqlite3"
+          },
+          {
+            "filenamePattern": "*.db3"
+          },
+          {
+            "filenamePattern": "*.s3db"
+          },
+          {
+            "filenamePattern": "*.sl3"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
+    "commands": [
+      {
+        "command": "database-viewer.openSqlite",
+        "title": "Database Viewer: Open SQLite Database",
+        "icon": "$(database)"
+      },
+      {
+        "command": "database-viewer.connectPostgres",
+        "title": "Database Viewer: Connect to PostgreSQL",
+        "icon": "$(server-environment)"
+      },
+      {
+        "command": "database-viewer.refresh",
+        "title": "Database Viewer: Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "database-viewer.openTable",
+        "title": "Open Table",
+        "icon": "$(table)"
+      },
+      {
+        "command": "database-viewer.disconnect",
+        "title": "Disconnect",
+        "icon": "$(debug-disconnect)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "database-viewer",
+          "title": "Database Viewer",
+          "icon": "media/database.svg"
+        }
+      ]
+    },
+    "views": {
+      "database-viewer": [
+        {
+          "id": "database-viewer.connections",
+          "name": "Databases"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "database-viewer.openSqlite",
+          "when": "view == database-viewer.connections",
+          "group": "navigation@1"
+        },
+        {
+          "command": "database-viewer.connectPostgres",
+          "when": "view == database-viewer.connections",
+          "group": "navigation@2"
+        },
+        {
+          "command": "database-viewer.refresh",
+          "when": "view == database-viewer.connections",
+          "group": "navigation@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "database-viewer.openTable",
+          "when": "view == database-viewer.connections && viewItem == databaseTable",
+          "group": "inline@1"
+        },
+        {
+          "command": "database-viewer.disconnect",
+          "when": "view == database-viewer.connections && viewItem == databaseConnection",
+          "group": "inline@2"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "database-viewer.openSqlite",
+          "when": "resourceExtname =~ /\\.(db|sqlite|sqlite3)$/",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Database Viewer"
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build-hljs && npm run compile",
+    "build-hljs": "esbuild media/hljs-entry.js --bundle --minify --format=iife --outfile=media/hljs.bundle.js",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.2.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "24.x",
+    "@types/pg": "^8.20.0",
+    "@types/vscode": "^1.125.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
+    "@vscode/vsce": "^3.9.2",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.5.0",
+    "highlight.js": "^11.11.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.1"
+  },
+  "overrides": {
+    "diff": "^8.0.4",
+    "serialize-javascript": "^7.0.6"
+  },
+  "dependencies": {
+    "@vscode/codicons": "^0.0.45",
+    "better-sqlite3": "^12.11.1",
+    "jsonc-parser": "^3.3.1",
+    "pg": "^8.22.0"
+  }
+}
